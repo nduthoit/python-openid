@@ -561,7 +561,7 @@ def _googleAppsReplace(original, id, default=None):
     return (original is not None \
             and re.match(r'^https?://www.google.com/a/', original) \
             and u'https://www.google.com/accounts/o8/user-xrds?uri=%s' % urllib.quote_plus(id)) \
-            or (default or original)
+            or (default or id)
 
 
 class GenericConsumer(object):
@@ -935,8 +935,8 @@ class GenericConsumer(object):
         # again. This covers not using sessions, OP identifier
         # endpoints and responses that didn't match the original
         # request.
+        
         claimed_id = _googleAppsReplace(to_match.server_url, to_match.claimed_id)
-
         if not endpoint:
             oidutil.log('No pre-discovered information supplied.')
             endpoint = self._discoverAndVerify(claimed_id, [to_match])
