@@ -4,7 +4,10 @@ This duplicates some things that are covered by test_consumer, but
 this works for now.
 """
 from openid import oidutil
-from openid.test.test_consumer import CatchLogs
+try:
+    from openid.test.test_consumer import CatchLogs
+except ImportError:
+    from test_consumer import CatchLogs
 from openid.message import Message, OPENID2_NS, OPENID_NS, no_default
 from openid.server.server import DiffieHellmanSHA1ServerSession
 from openid.consumer.consumer import GenericConsumer, \

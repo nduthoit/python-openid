@@ -57,7 +57,7 @@ def pyUnitTests():
 
 def test():
     runner = unittest.TextTestRunner()
-    return runner.run(loadTests())
+    return runner.run(pyUnitTests())
 
 filenames = ['data/test1-parsehtml.txt']
 

@@ -1,4 +1,7 @@
-from openid.test import datadriven
+try:
+    from openid.test import datadriven
+except ImportError:
+    import datadriven
 import time
 import unittest
 import re

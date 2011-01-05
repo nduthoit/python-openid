@@ -1,4 +1,7 @@
-from openid.test import datadriven
+try:
+    from openid.test import datadriven
+except:
+    import datadriven
 
 import unittest
 

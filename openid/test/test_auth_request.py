@@ -3,7 +3,10 @@ import unittest
 
 from openid.consumer import consumer
 from openid import message
-from openid.test import support
+try:
+    from openid.test import support
+except ImportError:
+    import support
 
 class DummyEndpoint(object):
     preferred_namespace = None

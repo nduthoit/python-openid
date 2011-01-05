@@ -6,7 +6,10 @@ __all__ = ['TestBuildDiscoveryURL']
 from openid.yadis.discover import DiscoveryResult, DiscoveryFailure
 from openid.yadis import services
 from openid.server import trustroot
-from openid.test.support import CatchLogs
+try:
+    from openid.test.support import CatchLogs
+except ImportError:
+    from support import CatchLogs
 import unittest
 
 # Too many methods does not apply to unit test objects
