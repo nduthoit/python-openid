@@ -550,6 +550,20 @@ class ServerError(Exception):
 
     fromMessage = classmethod(fromMessage)
 
+def _googleAppsReplace(original, id, default=None):
+    """
+        Replace a url or identifier with it's equivalent
+        in the google apps openid implementation if the given
+        url matches the google apps known 
+    """
+    import re, urllib
+
+    return (original is not None \
+            and re.match(r'^https?://www.google.com/a/', original) \
+            and u'https://www.google.com/accounts/o8/user-xrds?uri=%s' % urllib.quote_plus(id)) \
+            or (default or original)
+
+
 class GenericConsumer(object):
     """This is the implementation of the common logic for OpenID
     consumers. It is unaware of the application in which it is
@@ -921,11 +935,7 @@ class GenericConsumer(object):
         # again. This covers not using sessions, OP identifier
         # endpoints and responses that didn't match the original
         # request.
-        if to_match.server_url.startswith(u'https://www.google.com/a/'):
-            import urllib
-            claimed_id = u'https://www.google.com/accounts/o8/user-xrds?uri=%s' % urllib.quote_plus(to_match.claimed_id)
-        else:
-            claimed_id = to_match.claimed_id
+        claimed_id = _googleAppsReplace(to_match.server_url, to_match.claimed_id)
 
         if not endpoint:
             oidutil.log('No pre-discovered information supplied.')
@@ -1012,11 +1022,7 @@ class GenericConsumer(object):
 
         # Fragments do not influence discovery, so we can't compare a
         # claimed identifier with a fragment to discovered information.
-        if to_match.server_url.startswith(u'https://www.google.com/a/'):
-            import urllib
-            claimed_id = u'https://www.google.com/accounts/o8/user-xrds?uri=%s' % urllib.quote_plus(to_match.claimed_id)
-        else:
-            claimed_id = to_match.claimed_id
+        claimed_id = _googleAppsReplace(to_match.server_url, to_match.claimed_id)
 
         defragged_claimed_id, _ = urldefrag(claimed_id)
         if defragged_claimed_id != endpoint.claimed_id:
@@ -1025,11 +1031,7 @@ class GenericConsumer(object):
                 'Expected %s, got %s' %
                 (defragged_claimed_id, endpoint.claimed_id))
 
-        if to_match.server_url.startswith(u'https://www.google.com/a/'):
-            import urllib
-            local_id = u'https://www.google.com/accounts/o8/user-xrds?uri=%s' % urllib.quote_plus(to_match.local_id)
-        else:
-            local_id =  to_match.getLocalID()
+        local_id = _googleAppsReplace(to_match.server_url, to_match.local_id, to_match.getLocalID())
 
         if local_id != endpoint.getLocalID():
             raise ProtocolError('local_id mismatch. Expected %s, got %s' %
